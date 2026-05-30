@@ -63,8 +63,16 @@ def analisador_lexico(codigo, estado_inicial, transicoes, finais_dict):
 
             # Checa se o token é reconhecido
             if ultimo_estado_final is not None:
+                lexema = linha[pos:pos_ultimo_final + 1]
+
+                # validação de tamanho para VAR
+                if token_encontrado == "VAR" and len(lexema) > 30:
+                    erro_na_linha = True
+                    break
+
                 tokens_linha.append(token_encontrado)
                 pos = pos_ultimo_final + 1
+
             else:
                 # Não levou a nenhum estado final
                 erro_na_linha = True
@@ -77,22 +85,3 @@ def analisador_lexico(codigo, estado_inicial, transicoes, finais_dict):
             resultado.append(" ".join(tokens_linha))
 
     return resultado
-
-
-def main():
-    estado_inicial, transicoes, finais_dict = construir_dfa()
-
-    # Pega o arquivo do código em txt
-    nome_arquivo = 'testes_lexico.txt'
-
-    if os.path.exists(nome_arquivo):
-        with open(nome_arquivo, 'r', encoding='utf-8') as f:
-            codigo = f.read()
-
-    saidas = analisador_lexico(codigo, estado_inicial, transicoes, finais_dict)
-    for linha in saidas:
-        print(linha)
-
-
-if __name__ == "__main__":
-    main()

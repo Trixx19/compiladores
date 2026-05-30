@@ -1,8 +1,8 @@
 num a = 0 ;
-num b = 5 + a ;
+num bool = 5 + a ;
 text c = "teSte" ;
 @teste = 5 ;
-bool d = true ;
+booooool d = true ;
 1valor = 3 ;
 show a < b ;
 show a == b ;

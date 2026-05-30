@@ -1,41 +1,49 @@
-from expressaoRegular import tokens
-from geradorNFA import construir_nfa_global, coletar_todos_estados, resetar_contador
-
-
-from geradorDFA import nfa_para_dfa, testar_palavra
+from analisadorLexico import construir_dfa, analisador_lexico
+import os
 
 def main():
-    resetar_contador()
-    
-    
-    tokens_teste = {
-        "NUM"     : r"(num)",
-        "NUM_LIT" : r"([0-9]+)",
-        "VAR"     : r"([a-zA-Z_][a-zA-Z0-9_]*)",
-        "EQ"      : r"(=)",
-    }
+    print("Construindo DFA...")
+    estado_inicial, transicoes, finais_dict = construir_dfa()
+    print("DFA pronto!\n")
 
-    nfa_global = construir_nfa_global(tokens_teste)  
-    todos_estados_nfa = coletar_todos_estados(nfa_global)
+    while True:
+        print("Como deseja fornecer o codigo?")
+        print("1 - Carregar arquivo")
+        print("2 - Digitar manualmente")
+        print("3 - Sair")
+        opcao = input("\nEscolha (1, 2 ou 3): ").strip()
 
-    estados_dfa, transicoes_dfa, estado_inicial_dfa, estados_finais_dfa = nfa_para_dfa(nfa_global, todos_estados_nfa)
+        if opcao == "1":
+            nome_arquivo = "testes_lexico.txt"
+            if not os.path.exists(nome_arquivo):
+                print(f"Arquivo '{nome_arquivo}' não encontrado.\n")
+                continue
+            with open(nome_arquivo, 'r', encoding='utf-8') as f:
+                codigo = f.read()
+            saidas = analisador_lexico(codigo, estado_inicial, transicoes, finais_dict)
+            print("\n--- Resultado ---")
+            for saida in saidas:
+                print(saida)
+            print("-----------------\n")
 
-    print(f"O DFA foi criado e tem {len(estados_dfa)} estados no total.\n")
-    print("--- INICIANDO TESTES PRÁTICOS ---")
+        elif opcao == "2":
+            print("\nModo manual. Digite 'sair' para voltar ao menu.\n")
+            while True:
+                linha = input("> ")
+                if linha.lower() == 'sair':
+                    break
+                if linha.strip() == "":
+                    continue
+                saidas = analisador_lexico(linha, estado_inicial, transicoes, finais_dict)
+                for saida in saidas:
+                    print(saida)
 
-    
-    palavras_para_testar = [
-        "num",          # Deve ser NUM
-        "12345",        # Deve ser NUM_LIT
-        "variavel_1",   # Deve ser VAR
-        "=",            # Deve ser EQ
-        "numeral",      # Deve ser VAR (Começa com num, mas não para por aí)
-        "123a"          # Deve dar Erro léxico
-    ]
+        elif opcao == "3":
+            print("Encerrando...")
+            return
 
-    for palavra in palavras_para_testar:
-        resultado = testar_palavra(palavra, estado_inicial_dfa, transicoes_dfa, estados_finais_dfa)
-        print(resultado)
+        else:
+            print("Opção inválida.\n")
 
 if __name__ == "__main__":
     main()

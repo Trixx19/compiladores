@@ -47,10 +47,7 @@ def resetar_contador():
     _gerador.resetar()
 
 
-# =============================================================================
-# OPERAÇÕES DE THOMPSON
-# =============================================================================
-
+# Thompson
 def criar_nfa_caractere(caractere):
     """NFA que reconhece exatamente um caractere."""
     ini = novo_estado()
@@ -105,7 +102,7 @@ def opcional_nfa(nfa):
 
 # REGEX PARA NFA
 
-# Alfabeto da LangC – usado para calcular a negação [^...]
+# Alfabeto da LangC
 ALFABETO_LANGC = (
     [chr(c) for c in range(ord('a'), ord('z') + 1)] +
     [chr(c) for c in range(ord('A'), ord('Z') + 1)] +
@@ -236,10 +233,6 @@ def regex_para_nfa(padrao: str) -> NFA:
 
 # Junta todos os NFAs de token em um único NFA global
 def construir_nfa_global(dicionario_tokens: dict) -> NFA:
-    """
-    Entrada : dicionário {nome_token: regex}  (de expressaoRegular.py)
-    Saída   : NFA único que reconhece todos os tokens
-    """
     estado_inicial_global = novo_estado()
 
     for prioridade, (nome_token, padrao) in enumerate(dicionario_tokens.items(), start=1):

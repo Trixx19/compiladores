@@ -85,3 +85,39 @@ def testar_palavra(palavra, estado_inicial, transicoes, finais):
             return f"Sucesso! '{palavra}' reconhecido como {nome_token}"
             
     return f"Erro: '{palavra}' parou em um estado nao-final."
+
+def analisar_linha(linha, estado_inicial, transicoes, finais):
+    tokens_reconhecidos = []
+    i = 0
+    while i < len(linha):
+        # pula espaços
+        if linha[i] == ' ':
+            i += 1
+            continue
+        
+        # tenta reconhecer o próximo token a partir de i
+        estado_atual = estado_inicial
+        ultimo_token = None
+        ultimo_avanço = i
+
+        j = i
+        while j < len(linha):
+            char = linha[j]
+            if char in transicoes.get(estado_atual, {}):
+                estado_atual = transicoes[estado_atual][char]
+                # verifica se chegou em estado final
+                for est_final, nome_token in finais:
+                    if estado_atual == est_final:
+                        ultimo_token = nome_token
+                        ultimo_avanço = j + 1
+                j += 1
+            else:
+                break
+
+        if ultimo_token is None:
+            return "ERRO"
+
+        tokens_reconhecidos.append(ultimo_token)
+        i = ultimo_avanço
+
+    return ' '.join(tokens_reconhecidos)
