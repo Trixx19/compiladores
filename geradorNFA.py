@@ -127,12 +127,15 @@ def _expandir_classe(conteudo: str) -> list:
 
 
 def _nfa_de_lista_chars(chars: list) -> NFA:
-    """Cria NFA que aceita qualquer caractere da lista."""
-    nfas = [criar_nfa_caractere(c) for c in chars]
-    resultado = nfas[0]
-    for n in nfas[1:]:
-        resultado = unir_nfa(resultado, n)
-    return resultado
+    """Cria NFA correto (Thompson) que aceita qualquer caractere da lista."""
+    ini = novo_estado()
+    fin = novo_estado()
+    
+    # Todos os caracteres saem do mesmo estado inicial e vão para o mesmo final
+    for c in chars:
+        ini.adicionar_transicao(c, fin)
+        
+    return NFA(ini, fin)
 
 
 class _ParserRegex:

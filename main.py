@@ -4,6 +4,7 @@ import os
 def main():
     print("Construindo DFA...")
     estado_inicial, transicoes, finais_dict = construir_dfa()
+    print(f"DFA pronto com {len(transicoes)} estados!\n")
     print("DFA pronto!\n")
 
     while True:
